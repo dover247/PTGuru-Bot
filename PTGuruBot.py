@@ -1,4 +1,3 @@
-
 import discord
 import logging
 import asyncio
@@ -18,8 +17,9 @@ author = "**Learning Penetration Testing\n\nThe Penetration Testing Community**"
 Help = "**!!author\n!!joinredteam5**"
 
 # Feed Sources
-newslist = open("newslist.txt", "r")
-cve_feed = "http://bit.ly/2k97VtF"
+with open("newslist.txt", "r") as fh:
+    newslist = [line for line in fh]
+cve_feed = "http://www.cvedetails.com/vulnerability-feed.php?vendor_id=0&product_id=0&version_id=0&orderby=2&cvssscoremin=0"
 ctf_upcoming = "https://ctftime.org/event/list/upcoming/rss/"
 
 # Channel IDs
@@ -27,36 +27,51 @@ news_channel = "278244337752735744"
 vulnerability_channel = "278244156759867392"
 ctf_channel = "274925767924776960"
 
+
+# timers
+FEED_UPDATE_DELTA = 60
+
 # Single Feeders
-cve_feeder = feedparser.parse(cve_feed)
-ctf_feeder = feedparser.parse(ctf_upcoming)
 
 
+async def updatefeeds():
+    while True:
+        cve_feeder = feedparser.parse(cve_feed)
+        ctf_feeder = feedparser.parse(ctf_upcoming)
+        for feed_source in newslist:
+            news_feeder = feedparser.parse(feed_source)
+            await post_feeds(news_feeder)
+        await post_feeds(ctf_feeder)
+        await post_feeds(cve_feeder)
+        await asyncio.sleep(FEED_UPDATE_DELTA)
 
 @client.event
 # After Client Connection
 async def on_ready():
     log.info("Initialzation Complete..")
     log.info("Guru! Guru!.")
-    await post_upcoming_ctfs()
-    await post_vulnerabilities()
-    await post_feeds()
+    await updatefeeds()
 
 # InfoSec Feeds
-async def post_feeds():
-    # Multi Feeder
-    for feed_source in newslist:
-        news_feeder = feedparser.parse(feed_source)
-        await client.send_message(client.get_channel(news_channel), "**{}**\n\n{}".format(news_feeder.entries[0].title, news_feeder.entries[0].link))
-        await asyncio.sleep(3)
+async def post_feeds(feed):
+    entry = feed.entries[0]
+    args = [entry.title, entry.link]
+    msg = "**{}**\n\n{}".format(*args)
+    await client.send_message(client.get_channel(news_channel), msg)
 
 # CVE Vulnerability Feed
 async def post_vulnerabilities():
-    await client.send_message(client.get_channel(vulnerability_channel), "**Newly Posted Vulnerability!!\n{}\n\n{}\n{}**".format(cve_feeder.entries[0].title, cve_feeder.entries[0].summary, cve_feeder.entries[0].link))
+    entry = cve_feeder.entries[0]
+    args = [entry.title, entry.summary, entry.link]
+    msg = "**Newly Posted Vulnerability!!\n{}\n\n{}\n{}**".format(*args)
+    await client.send_message(client.get_channel(vulnerability_channel), msg)
 
 # Upcoming CTFs Feed "CTFtime.org"
 async def post_upcoming_ctfs():
-    await client.send_message(client.get_channel(ctf_channel), "**Newly Posted CTF!!\n\n{}\n\n{}**".format(ctf_feeder.entries[0].title, re.sub("<.*?>", "", ctf_feeder.entries[0].summary)))
+    entry = ctf_feeder.entries[0]
+    args = [entry.title, re.sub("<.*?>", "", entry.summary)]
+    msg = "**Newly Posted CTF!!\n\n{}\n\n{}**".format(*args)
+    await client.send_message(client.get_channel(ctf_channel), msg)
 
 @client.event
 # Bot Capabilities Upon Sent Message
@@ -76,4 +91,7 @@ async def on_message(message):
             await client.send_message(message.channel, redteam5_about_page)
             await client.send_file(message.channel, community_logo)
 
-client.run("Mjc3MjMwODcyNDMwNzcyMjI2.C3awAA.66dkxAXIHrdg4wI7sp8LTtzXlCw")
+
+with open("_secret.token.txt", 'r') as fh:
+    token = [line for line in fh][0]
+client.run(token)
