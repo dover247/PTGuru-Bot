@@ -1,3 +1,4 @@
+import feedparser
 import discord
 import logging
 import asyncio
@@ -13,8 +14,9 @@ log = logging.getLogger()
 client = discord.Client()
 
 # Bot Responses
-author = "**Learning Penetration Testing\n\nThe Penetration Testing Community**"
-Help = "**!!author\n!!joinredteam5**"
+author_name = """**Learning Penetration Testing
+
+The Penetration Testing Community**"""
 
 # Feed Sources
 with open("newslist.txt", "r") as fh:
@@ -72,6 +74,7 @@ async def post_upcoming_ctfs():
     args = [entry.title, re.sub("<.*?>", "", entry.summary)]
     msg = "**Newly Posted CTF!!\n\n{}\n\n{}**".format(*args)
     await client.send_message(client.get_channel(ctf_channel), msg)
+
 
 @client.event
 # Bot Capabilities Upon Sent Message
