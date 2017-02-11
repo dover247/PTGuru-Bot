@@ -1,9 +1,10 @@
 from discord.ext.commands import Bot
+import feedparser
 import logging
 import asyncio
-import feedparser
 import time
 import re
+
 
 #Logging Capability
 logging.basicConfig(filename="gurubot-log.txt", level=logging.INFO, format="%(asctime)s - %(levelname)s [+]%(message)s")
@@ -18,62 +19,51 @@ author_name = """**Learning Penetration Testing
 The Penetration Testing Community**"""
 
 # Feed Sources
-with open("newslist.txt", "r") as fh:
-    newslist = [line for line in fh]
+newslist = open("newslist.txt", "r").readlines()
 cve_feed = "http://www.cvedetails.com/vulnerability-feed.php?vendor_id=0&product_id=0&version_id=0&orderby=2&cvssscoremin=0"
-ctf_upcoming = "https://ctftime.org/event/list/upcoming/rss/"
+ctf_upcoming_feed = "https://ctftime.org/event/list/upcoming/rss/"
 
 # Channel IDs
 news_channel = "278244337752735744"
 vulnerability_channel = "278244156759867392"
 ctf_channel = "274925767924776960"
 
-
 # timers
-FEED_UPDATE_DELTA = 60
-
-# Single Feeders
-
-
-async def updatefeeds():
-    while True:
-        cve_feeder = feedparser.parse(cve_feed)
-        ctf_feeder = feedparser.parse(ctf_upcoming)
-        for feed_source in newslist:
-            news_feeder = feedparser.parse(feed_source)
-            await post_feeds(news_feeder)
-        await post_feeds(ctf_feeder)
-        await post_feeds(cve_feeder)
-        await asyncio.sleep(FEED_UPDATE_DELTA)
+FEED_UPDATE_DELTA = 3600
 
 @client.event
 # After Client Connection
 async def on_ready():
     log.info("Initialzation Complete..")
     log.info("Guru! Guru!.")
-    await updatefeeds()
+    await update_all_feeds()
 
-# InfoSec Feeds
-async def post_feeds(feed):
-    entry = feed.entries[0]
-    args = [entry.title, entry.link]
-    msg = "**{}**\n\n{}".format(*args)
-    await client.send_message(client.get_channel(news_channel), msg)
+# Updates Feeds
+async def update_all_feeds():
+    while True:
+        await post_feeds(ctf_upcoming_feed, ctf_channel)
+        await post_feeds(cve_feed, vulnerability_channel)
+        await post_feeds(newslist, news_channel)
+        asyncio.sleep(FEED_UPDATE_DELTA)
 
-# CVE Vulnerability Feed
-async def post_vulnerabilities():
-    entry = cve_feeder.entries[0]
+# Posts Feeds
+async def post_feeds(feed, channel):
+    if not feed == str:
+        for feed_source in feed:
+            feeder = feedparser.parse(feed_source.strip())
+            await feed_procedure(feeder, channel)
+    else:
+        feeder = feedparser.parse((log.info(feed_source.strip())))
+        await feed_procedure(feeder, channel)
+
+# Feed Handler
+async def feed_procedure(feeder, channel):
+    entry = feeder.entries[0]
     args = [entry.title, entry.summary, entry.link]
-    msg = "**Newly Posted Vulnerability!!\n{}\n\n{}\n{}**".format(*args)
-    await client.send_message(client.get_channel(vulnerability_channel), msg)
+    msg = "**---New Post!---\n{}\n\n{}\n{}**".format(*args)
+    await client.send_message(client.get_channel(channel), re.sub("<.*?>", "", msg))
 
-# Upcoming CTFs Feed "CTFtime.org"
-async def post_upcoming_ctfs():
-    entry = ctf_feeder.entries[0]
-    args = [entry.title, re.sub("<.*?>", "", entry.summary)]
-    msg = "**Newly Posted CTF!!\n\n{}\n\n{}**".format(*args)
-    await client.send_message(client.get_channel(ctf_channel), msg)
-
+# Bot Capabilities Upon Sent Message
 @client.command()
 async def author():
     await client.say(author_name)
@@ -85,11 +75,6 @@ async def joinredteam5():
         await client.say(redteam5_about_page)
         await client.send_file(message.channel, community_logo)
 
-# @client.event
-# async def on_message(message):
-#     log.info("{} Sent:".format(message.author))
-#     log.info("Message: {}".format(message.content))
-#     # Will not work, there is a workaround but I dont remember
 
 def main():
     with open("_secret.token.txt", 'r') as fh:
@@ -98,3 +83,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
