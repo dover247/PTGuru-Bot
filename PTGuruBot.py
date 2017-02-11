@@ -1,5 +1,5 @@
+from discord.ext.commands import Bot
 import feedparser
-import discord
 import logging
 import asyncio
 import time
@@ -11,11 +11,12 @@ logging.basicConfig(filename="gurubot-log.txt", level=logging.INFO, format="%(as
 log = logging.getLogger()
 
 # Client
-client = discord.Client()
+client = discord.Bot(command_prefix="!!")
 
 # Bot Responses
-author = "**Learning Penetration Testing\n\nThe Penetration Testing Community**"
-Help = "**!!author\n!!joinredteam5**"
+author_name = """**Learning Penetration Testing
+
+The Penetration Testing Community**"""
 
 # Feed Sources
 newslist = open("newslist.txt", "r").readlines()
@@ -63,24 +64,23 @@ async def feed_procedure(feeder, channel):
     await client.send_message(client.get_channel(channel), re.sub("<.*?>", "", msg))
 
 # Bot Capabilities Upon Sent Message
-@client.event
-async def on_message(message):
-    log.info("{} Sent:".format(message.author))
-    log.info("Message: {}".format(message.content))
+@client.command()
+async def author():
+    await client.say(author_name)
 
-    if message.content.startswith("!!author"):
-        await client.send_message(message.channel, author)
+@client.command()
+async def joinredteam5():
+    redteam5_about_page = open("RedTeam5.txt", "r").read()
+    with open("malware-image.jpg", "rb") as community_logo:
+        await client.say(redteam5_about_page)
+        await client.send_file(message.channel, community_logo)
 
-    if message.content.startswith("!!help"):
-        await client.send_message(message.channel, Help)
 
-    if message.content.startswith("!!joinredteam5"):
-        redteam5_about_page = open("RedTeam5.txt", "r").read()
-        with open("malware-image.jpg", "rb") as community_logo:
-            await client.send_message(message.channel, redteam5_about_page)
-            await client.send_file(message.channel, community_logo)
+def main():
+    with open("_secret.token.txt", 'r') as fh:
+        token = [line for line in fh][0]
+    client.run(token)
 
-# Grabs Token For Authentication
-with open("_secret.token.txt", 'r') as fh:
-    token = fh.read().strip()
-client.run(token)
+if __name__ == "__main__":
+    main()
+
