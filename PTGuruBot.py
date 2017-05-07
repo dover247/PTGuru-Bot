@@ -47,9 +47,9 @@ async def get_feed_content(url):
 def get_channel(channel):
     """Get the discord channel object from channel name"""
     if channel == "news":
-        channel_id = 288834230618816516 #278244337752735744
+        channel_id = 278244337752735744
     elif channel == "ctf":
-        channel_id = 288834230618816516 #274925767924776960
+        channel_id = 274925767924776960
     return discord.Object(id=str(channel_id))
 
 # Updates Feeds
