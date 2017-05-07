@@ -2,3 +2,4 @@ _secret.token.txt
 gurubot-log.txt
 .vscode
 .gitignore
+*.orig
