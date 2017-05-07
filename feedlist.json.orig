@@ -1,0 +1,151 @@
+{
+	"CVE": {
+		"postChannel": "news",
+		"color": "0xd11437",
+		"feeds": [
+			{
+				"prefix": "CVE",
+				"url": "http://www.cvedetails.com/vulnerability-feed.php?vendor_id=0&product_id=0&version_id=0&orderby=2&cvssscoremin=0",
+				"idNode": "link",
+				"idPattern": "-(\\d{4,})/$"
+			}
+		]
+	},
+	"CTF": {
+		"postChannel": "ctf",
+		"color": "0x0eb22f",
+		"feeds": [
+			{
+				"prefix": "CTF",
+				"url": "https://ctftime.org/event/list/upcoming/rss/",
+				"idNode": "ctf_id"
+			}
+		]
+	},
+	"NEWS": {
+		"postChannel": "news",
+		"color": "0x3498db",
+		"feeds": [
+			{
+				"prefix": "DR",
+				"url": "http://www.darkreading.com/rss_simple.asp",
+				"idNode": "guid",
+				"idPattern": "/(\\d{7,})$"
+			},
+			{
+				"prefix": "CSO",
+				"url": "http://www.csoonline.com/author/Steve-Morgan/index.rss",
+				"idNode": "link",
+				"idPattern": "/(\\d{7,})/"
+			},
+			{
+				"prefix": "SWB",
+				"url": "https://www.secureworks.com/rss?feed=blog",
+				"idNode": "guid",
+				"idPattern": "/([\\w\\-\\.]+)$"
+			},
+			{
+				"prefix": "SWR",
+				"url": "https://www.secureworks.com/rss?feed=resources",
+				"idNode": "guid",
+				"idPattern": "/([\\w\\-\\.]+)$"
+			},
+			{
+				"prefix": "SWS",
+				"url": "https://www.secureworks.com/rss?feed=research",
+				"idNode": "guid",
+				"idPattern": "/([\\w\\-\\.]+)$"
+			},
+			{
+				"prefix": "DBT",
+				"url": "http://feeds.feedburner.com/databreachtoday/com?format=xml",
+				"idNode": "guid",
+				"idPattern": "-(\\d{4,})$"
+			},
+			{
+				"prefix": "TP",
+				"url": "https://threatpost.com/feed/",
+				"idNode": "guid",
+				"idPattern": "=(\\d{6,})$"
+			},
+			{
+				"prefix": "NS",
+				"url": "https://nakedsecurity.sophos.com/feed/",
+				"idNode": "guid",
+				"idPattern": "=(\\d{6,})$"
+			},
+			{
+				"prefix": "ISI",
+				"url": "http://www.infosecisland.com/rss.html",
+				"idNode": "guid",
+				"idPattern": "/(\\d{5,})-"
+			},
+			{
+				"prefix": "KS",
+				"url": "https://krebsonsecurity.com/feed/",
+				"idNode": "guid",
+				"idPattern": "=(\\d{5,})$"
+			},
+			{
+				"prefix": "SW",
+				"url": "http://feeds.feedburner.com/Securityweek?format=xml",
+				"idNode": "guid",
+				"idPattern": "(\\d{5,}) "
+			},
+			{
+				"prefix": "ESET",
+				"url": "http://feeds.feedburner.com/eset/blog?format=xml",
+				"idNode": "guid",
+				"idPattern": "=(\\d{5,})$"
+			},
+			{
+				"prefix": "ISM",
+				"url": "http://infosecuritymagazine.nl/feed/",
+				"idNode": "guid",
+				"idPattern": "=(\\d{5,})$"
+			},
+			{
+				"prefix": "GC",
+				"url": "https://www.grahamcluley.com/feed/",
+				"idNode": "guid",
+				"idPattern": "=(\\d{6,})$"
+			},
+			{
+				"prefix": "BD",
+				"url": "https://hotforsecurity.bitdefender.com/feed",
+				"idNode": "guid",
+				"idPattern": "=(\\d{5,})$"
+			},
+			{
+				"prefix": "SM",
+				"url": "http://www.securitymagazine.com/rss/topic/2236",
+				"idNode": "guid",
+				"idPattern": "/(\\d{5,})$"
+			},
+			{
+				"prefix": "CW",
+				"url": "http://www.computerweekly.com/rss/IT-security.xml",
+				"idNode": "link",
+				"idPattern": "/([\\w\\-\\.]+)$"
+			},
+			{
+				"prefix": "ESP",
+				"url": "http://www.esecurityplanet.com/rss.xml",
+				"idNode": "link",
+				"idPattern": "/([\\w\\-\\.]+)\\.html$"
+			},
+			{
+				"prefix": "ISG",
+				"url": "http://www.itsecurityguru.org/feed/",
+				"idNode": "guid",
+				"idPattern": "=(\\d{5,})$"
+			},
+			{
+				"prefix": "SL",
+				"url": "https://securelist.com/feed/",
+				"idNode": "guid",
+				"idPattern": "=(\\d{5,})$"
+			}
+		]
+	}
+}
